@@ -3,19 +3,27 @@
 
 #include <string>
 
+class Sensor;
+
+
 class AlarmSystem
 {
 public:
-    AlarmSystem(const std::string& location, uint64_t securityCode);
+    AlarmSystem(const std::string& locationName, int code);
 
-    bool arm();
-    bool disarm();
-    void printStatus();
+    void printStatus() const;
+    void checkSensor(const Sensor& sensor);
+
+    bool arm(int inputCode);
+    bool disarm(int inputCode);
 
 private:
     std::string location;
     int pinCode;
+
+
     bool isArmed;
+    bool isAlarmActive;
 };
 
 #endif

@@ -1,32 +1,54 @@
-#include "SystemAlarm.h"
 #include <iostream>
-
+#include "SystemAlarm.h"
+#include "Sensor.h"
 
 int main()
 {
-    AlarmSystem house1("House", 5588);
-    AlarmSystem house2("House 2", 3215);
 
-    house1.printStatus();
-    house2.printStatus();
+    AlarmSystem houseAlarm("Office", 5588);
+    Sensor motionSensor("Motion Sensor", 85);
 
 
-    bool isHouse1Armed = false;
-    while (isHouse1Armed == false)
+    std::cout << "Initial Objects Status" << std::endl;
+    houseAlarm.printStatus();
+    motionSensor.printInfo();
+
+
+    int inputPin = 0;
+
+    bool isArmedSuccessfully = false;
+
+    std::cout << std::endl;
+    std::cout << " Arming the System " << std::endl;
+
+    
+    while (!isArmedSuccessfully)
     {
-        isHouse1Armed = house1.arm();
+        std::cout << "Enter PIN code to ARM the system: ";
+        std::cin >> inputPin;
+        isArmedSuccessfully = houseAlarm.arm(inputPin);
     }
 
+    std::cout << std::endl;
+    std::cout << " Simulating Sensor Event " << std::endl;
+    motionSensor.trigger();
+    houseAlarm.checkSensor(motionSensor);
+    houseAlarm.printStatus();
 
-    bool isHouse2Armed = false;
-    while (isHouse2Armed == false)
+    bool isDisarmedSuccessfully = false;
+
+    std::cout << " Disarming the System " << std::endl;
+
+
+    while (!isDisarmedSuccessfully)
     {
-        isHouse2Armed = house2.arm();
+        std::cout << "Enter PIN code to DISARM the system: ";
+        std::cin >> inputPin;
+        isDisarmedSuccessfully = houseAlarm.disarm(inputPin);
     }
 
-
-    house1.printStatus();
-    house2.printStatus();
+    motionSensor.reset();
+    houseAlarm.printStatus();
 
     return 0;
 }

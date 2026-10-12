@@ -1,62 +1,87 @@
 #include "SystemAlarm.h"
+#include "Sensor.h"
 #include <iostream>
 
-AlarmSystem::AlarmSystem(const std::string& locationName, uint64_t Code)
+AlarmSystem::AlarmSystem(const std::string& locationName, int code)
+    : location(locationName), pinCode(code), isArmed(false), isAlarmActive(false)
 {
-    location = locationName;
-    pinCode = Code;
-    isArmed = false;
+
 }
 
-bool AlarmSystem::arm()
+bool AlarmSystem::arm(int inputCode)
 {
-    int inputCode = 0;
-    std::cout << std::endl;
-    std::cout << "Enter PIN " << location << ": ";
-    std::cin >> inputCode;
-
     if (inputCode == pinCode)
     {
         isArmed = true;
-        std::cout << " SUCCESS: " << location << " system is now ARMED!" << std::endl;
+
+        std::cout << "AlarmSystem Success: " << location << " On guard! " << std::endl;
         return true;
     }
-    else
-    {
-        std::cout << " ERROR: Wrong PIN code! Try again." << std::endl;
-        return false;
-    }
+    std::cout << "AlarmSystem ERROR: Incorrect pin! " << std::endl;
+    return false;
 }
 
-bool AlarmSystem::disarm()
+bool AlarmSystem::disarm(int inputCode)
 {
-    int inputCode = 0;
-    std::cout << std::endl;
-    std::cout << "Enter PIN " << location << ": ";
-    std::cin >> inputCode;
-
     if (inputCode == pinCode)
     {
         isArmed = false;
-        std::cout << " SUCCESS: " << location << " system is now DISARMED!" << std::endl;
+        isAlarmActive = false;
+
+        std::cout << "AlarmSystem Success: " << location << " Removed guard!" << std::endl;
         return true;
     }
-    else
-    {
-        std::cout << "ERROR: Wrong PIN code! Try again." << std::endl;
-        return false;
-    }
+    std::cout << "AlarmSystem ERROR: Incorrect pin!" << std::endl;
+    return false;
 }
 
-void AlarmSystem::printStatus()
+void AlarmSystem::printStatus() const
 {
-    std::cout << "Location: " << location << " | Status: ";
+    std::cout << "----------------------" << std::endl;
+    std::cout << " Location: " << location << std::endl;
+    std::cout << "State guard: ";
+
     if (isArmed)
     {
-        std::cout << "ARMED" << std::endl;
+        std::cout << " On guard " << std::endl;
     }
     else
     {
-        std::cout << "DISARMED" << std::endl;
+        std::cout << " Remove guard " << std::endl;
+    }
+    std::cout << "Alarm: ";
+
+    if (isAlarmActive)
+    {
+        std::cout << "ACTIVEEEE!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Switch off" << std::endl;
+    }
+
+    std::cout << "----------------------" << std::endl;
+}
+
+
+void AlarmSystem::checkSensor(const Sensor& sensor)
+{
+    std::cout << "-> Check the sensor staty by system " << std::endl;
+
+    if (sensor.isAlert())
+    {
+        if (isArmed)
+        {
+            isAlarmActive = true;
+            std::cout << " Alarm was triggered " << location << "!" << std::endl;
+        }
+        else
+        {
+            std::cout << " Sensor triggered " << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << " Sensor normal " << std::endl;
     }
 }
